@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 // TODO CheckStyle: Wrong lexicographical order for 'java.util.HashMap' import (remove this comment once resolved)
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import java.util.Map;
 public class CountryCodeConverter {
 
     // TODO Task: pick appropriate instance variable(s) to store the data necessary for this class
+    private final Map<String, String> codeToCountry = new HashMap<>();
+    private Map<String, String> countryToCode = new HashMap<>();
 
     /**
      * Default constructor which will load the country codes from "country-codes.txt"
@@ -36,6 +39,17 @@ public class CountryCodeConverter {
                     .getClassLoader().getResource(filename).toURI()));
 
             // TODO Task: use lines to populate the instance variable(s)
+            Iterator<String> iterator = lines.iterator();
+
+            // skip the header
+            iterator.next();
+
+            while (iterator.hasNext()) {
+                String line = iterator.next();
+                String[] parts = line.split("\t");
+                codeToCountry.put(parts[2].toLowerCase(), parts[0]);
+                countryToCode.put(parts[0], parts[2].toLowerCase());
+            }
 
         }
         catch (IOException | URISyntaxException ex) {
@@ -51,7 +65,7 @@ public class CountryCodeConverter {
      */
     public String fromCountryCode(String code) {
         // TODO Task: update this code to use an instance variable to return the correct value
-        return code;
+        return codeToCountry.get(code);
     }
 
     /**
@@ -61,7 +75,7 @@ public class CountryCodeConverter {
      */
     public String fromCountry(String country) {
         // TODO Task: update this code to use an instance variable to return the correct value
-        return country;
+        return countryToCode.get(country);
     }
 
     /**
@@ -70,6 +84,6 @@ public class CountryCodeConverter {
      */
     public int getNumCountries() {
         // TODO Task: update this code to use an instance variable to return the correct value
-        return 0;
+        return countryToCode.size();
     }
 }
